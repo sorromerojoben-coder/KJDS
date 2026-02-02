@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        // Lightbox modal logic
+        const galleryImages = document.querySelectorAll('.photo-grid img');
+        let currentIndex = 0;
+        let images = [];
+        let modal = document.createElement('div');
+        modal.id = 'lightbox-modal';
+        modal.style.display = 'none';
+        modal.style.position = 'fixed';
+        modal.style.top = '0';
+        modal.style.left = '0';
+        modal.style.width = '100vw';
+        modal.style.height = '100vh';
+        modal.style.background = 'rgba(0,0,0,0.85)';
+        modal.style.justifyContent = 'center';
+        modal.style.alignItems = 'center';
+        modal.style.zIndex = '9999';
+        modal.style.display = 'none';
+        modal.innerHTML = `
+          <span id="lightbox-close" style="position:absolute;top:30px;right:40px;font-size:2.5rem;color:white;cursor:pointer;">&times;</span>
+          <span id="lightbox-left" style="position:absolute;left:40px;top:50%;transform:translateY(-50%);font-size:2.5rem;color:white;cursor:pointer;">&#8592;</span>
+          <div style="display:flex;flex-direction:column;align-items:center;width:100%;">
+            <img id="lightbox-img" src="" style="max-width:98vw;max-height:70vh;width:auto;height:auto;object-fit:contain;border-radius:10px;box-shadow:0 0 40px #000;">
+            <div id="lightbox-thumbs" style="margin-top:24px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;"></div>
+          </div>
+          <span id="lightbox-right" style="position:absolute;right:40px;top:50%;transform:translateY(-50%);font-size:2.5rem;color:white;cursor:pointer;">&#8594;</span>
+        `;
+        document.body.appendChild(modal);
+
+        function showModal(imgList, idx) {
+          images = Array.from(imgList);
+          currentIndex = idx;
+          document.getElementById('lightbox-img').src = images[currentIndex].src;
+          renderThumbnails();
+          modal.style.display = 'flex';
+        }
+
+        function renderThumbnails() {
+          const thumbs = document.getElementById('lightbox-thumbs');
+          thumbs.innerHTML = '';
+          images.forEach((img, i) => {
+            const thumb = document.createElement('img');
+            thumb.src = img.src;
+            thumb.style.width = '60px';
+            thumb.style.height = '60px';
+            thumb.style.objectFit = 'cover';
+            thumb.style.borderRadius = '6px';
+            thumb.style.cursor = 'pointer';
+            thumb.style.opacity = i === currentIndex ? '1' : '0.6';
+            thumb.style.border = i === currentIndex ? '2px solid var(--orange)' : '2px solid transparent';
+            thumb.onclick = function() {
+              currentIndex = i;
+              document.getElementById('lightbox-img').src = images[currentIndex].src;
+              renderThumbnails();
+            };
+            thumbs.appendChild(thumb);
+          });
+        }
+
+        document.querySelectorAll('.photo-grid').forEach(function(grid) {
+          const imgs = grid.querySelectorAll('img');
+          imgs.forEach((img, idx) => {
+            img.addEventListener('click', function(e) {
+              e.stopPropagation();
+              showModal(imgs, idx);
+            });
+          });
+        });
+
+        document.getElementById('lightbox-close').onclick = function() {
+          modal.style.display = 'none';
+        };
+        document.getElementById('lightbox-left').onclick = function() {
+          currentIndex = (currentIndex - 1 + images.length) % images.length;
+          document.getElementById('lightbox-img').src = images[currentIndex].src;
+          renderThumbnails();
+        };
+        document.getElementById('lightbox-right').onclick = function() {
+          currentIndex = (currentIndex + 1) % images.length;
+          document.getElementById('lightbox-img').src = images[currentIndex].src;
+          renderThumbnails();
+        };
+        modal.onclick = function(e) {
+          if (e.target === modal) modal.style.display = 'none';
+        };
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+          if (modal.style.display === 'flex') {
+            if (e.key === 'ArrowLeft') {
+              document.getElementById('lightbox-left').click();
+            } else if (e.key === 'ArrowRight') {
+              document.getElementById('lightbox-right').click();
+            } else if (e.key === 'Escape') {
+              document.getElementById('lightbox-close').click();
+            }
+          }
+        });
+        // Ensure modal is hidden on page load
+        modal.style.display = 'none';
+      });
+    </script>
+  <meta charset="UTF-8">
+  <title>KJDS Productions</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- CSS LINK -->
+  <link rel="stylesheet" href="style.css">
+  <!-- Font Awesome for contact icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+
+  <!-- NAVIGATION -->
+  <header>
+    <nav class="nav">
+      <h1 class="logo">
+        <a href="#" class="logo-home">
+          <img src="images/logo1.png" alt="KJDS Productions Logo">
+        </a>
+        KJDS Productions
+      </h1>
+      <a href="#" class="nav-links-overlay" style="position:absolute;top:0;right:0;bottom:0;left:0;z-index:10;"></a>
+      <ul class="nav-links" style="position:relative;z-index:20;">
+        <li><a href="#hero">Home</a></li>
+        <li><a href="#portfolio">Portfolio</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section class="hero" id="hero">
+    <h2>Making Every Moment Feel Eternal</h2>
+    <p>A kid who once had a dream of becoming a photographer.</p>
+  </section>
+
+  <!-- PORTFOLIO / GALLERY -->
+  <section class="portfolio" id="portfolio">
+    <h3>Portfolio</h3>
+
+    <div class="gallery">
+      <!-- Replace with your photos -->
+      <!-- Grid 1: Red Mustang -->
+      <div class="photo-box photo-grid">
+        <img src="images/_MG_2238.jpg" alt="Red Mustang 1">
+        <img src="images/_MG_2241.jpg" alt="Red Mustang 2">
+        <img src="images/_MG_2245.jpg" alt="Red Mustang 3">
+        <img src="images/_MG_2250@984587201.jpg" alt="Red Mustang 4">
+      </div>
+      <!-- Grid 2: Pink, Green, Blue Cars -->
+      <div class="photo-box photo-grid">
+        <img src="images/IMG_1415@-1932934589.jpg" alt="Pink Car">
+        <img src="images/IMG_20260120_174032_edit_1375979856727811.jpg" alt="Blue Car">
+        <img src="images/new9356-IMG_1719@-622695236.jpg" alt="Green Car">
+        <img src="images/IMG_1414@-1933858110.jpg" alt="Pink Car 2">
+      </div>
+      <!-- Grid 3: Girl in Pink Jacket -->
+      <div class="photo-box photo-grid">
+        <img src="images/1.jpg" alt="Girl in Pink Jacket Main">
+        <img src="images/9.jpg" alt="Girl in Pink Jacket 2">
+        <img src="images/22.jpg" alt="Girl in Pink Jacket 3">
+        <img src="images/23.jpg" alt="Girl in Pink Jacket 4">
+      </div>
+      <!-- Grid 4: Black & White Shots -->
+      <div class="photo-box photo-grid">
+        <img src="images/_B5A7580.jpg" alt="Main Picture">
+        <img src="images/_B5A7541.jpg" alt="Black & White 1">
+        <img src="images/_B5A7632.jpg" alt="Black & White 3">
+        <img src="images/_B5A7633.jpg" alt="Black & White 4">
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="about" id="about">
+    <h3>About</h3>
+    <p>
+      <p>
+        KJDS Productions is a creative photography brand focused on capturing real emotions and genuine moments.
+        We believe every photo should tell a story.
+      </p>
+    </p>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="contact" id="contact">
+    <h3>Contact</h3>
+    <div class="contact-icons">
+      <a href="mailto:oremorrosjoben@gmail.com" class="contact-icon" title="Email">
+        <i class="fas fa-envelope"></i>
+      </a>
+      <a href="https://facebook.com/KJDSProductions" class="contact-icon" title="Facebook Page" target="_blank">
+        <i class="fab fa-facebook"></i>
+      </a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2026 KJDS Productions</p>
+  </footer>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var continueBtn = document.getElementById('continue-btn');
+    if (continueBtn) {
+      continueBtn.addEventListener('click', function() {
+        document.querySelector('.portfolio').style.display = '';
+        document.querySelector('.about').style.display = '';
+        document.querySelector('.contact').style.display = '';
+        document.querySelector('footer').style.display = '';
+        continueBtn.style.display = 'none';
+      });
+    }
+  });
+</script>
+</body>
+</html>
